@@ -24,6 +24,13 @@ namespace Foodie.Controllers
             return myFoods;
         }
 
+        [HttpGet]
+        [ActionName("getFoods")]
+        public List<Food> getFoods()
+        {
+            return null;
+        }
+
         // POST: api/Foods
         public void Post([FromBody]string value)
         {

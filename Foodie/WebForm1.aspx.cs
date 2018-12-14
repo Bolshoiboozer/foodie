@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Foodie.Models;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -21,11 +22,19 @@ namespace Foodie
                 yazi+=myFoods[i].displayFood(myFoods[i]);
 
             deneme.InnerHtml = yazi;*/
-
+            /*
             BackPropProgram bp = new BackPropProgram();
             double[] brain= bp.generateBrain();   
-            bp.testFood(bp.learningFood(brain));
+            bp.testFood(bp.learningFood(brain));*/
+            String[] listIng= new String[3];
+            listIng[0] = "chicken";
+            listIng[1] = "oil";
+            listIng[2] = "tomato";
+            String yazi = "";
+            Food myFood = Food.getFood(listIng);
+                yazi += myFood.displayFood(myFood);
 
+            deneme.InnerHtml = yazi;
         }
     }
 }

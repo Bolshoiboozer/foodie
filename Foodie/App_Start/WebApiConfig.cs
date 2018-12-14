@@ -19,6 +19,12 @@ namespace Foodie
                 routeTemplate: "api/{controller}/{action}/",
                 defaults: new { id = RouteParameter.Optional }
             );
+
+            config.Routes.MapHttpRoute(
+                name: "getFood",
+                routeTemplate: "api/{controller}/{action}/",
+                defaults: new { id = RouteParameter.Optional }
+            );
         }
     }
 }
