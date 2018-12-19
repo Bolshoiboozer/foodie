@@ -9,24 +9,16 @@ namespace Foodie
 {
     class BackPropProgram
     {
-        public void testFood(double[] brain)
+        public static int myfile = 0;
+        public double testFood(double[] brain, double[] inputs)
         {
             try
             {
                 Random rnd = new Random(1); // for random weights. not used.
 
-                List<double[]> inputs = new List<double[]>();
-                inputs.Add(new double[3] { 1, 0, 0 });
-                inputs.Add(new double[3] { 1, 1, 0 });
-
-                List<double[]> answers = new List<double[]>();
-                answers.Add(new double[2] { 1, 0 });
-                answers.Add(new double[2] { 1, 0 });
-
                 double[] yValues; // outputs
 
-
-                int numInput = 3;
+                int numInput = 814;
                 int numHidden = 4;
                 int numOutput = 2;
                 int numWeights = (numInput * numHidden) + (numHidden * numOutput) + (numHidden + numOutput);
@@ -35,52 +27,36 @@ namespace Foodie
 
                 bnn.SetWeights(brain);
 
-
                 string createText = "";
-                for (int j = 0; j < answers.Count; j++)
-                {
-                    yValues = bnn.ComputeOutputs(inputs[j]);
-                    createText += yValues[0].ToString() + " " + yValues[1] + Environment.NewLine;
 
-                }
-                String path = "C:\\Users\\AS-Bolshoi\\Desktop\\alp2.txt";
+                yValues = bnn.ComputeOutputs(inputs);
+                createText += yValues[0].ToString() + " " + yValues[1] + Environment.NewLine;
+                
+                String path = "C:\\Users\\AS-Bolshoi\\Desktop\\"+myfile+".txt";
                 File.WriteAllText(path, createText);
-
+                myfile++;
+                return yValues[0];
             }
             catch (Exception ex)
             {
                 Console.WriteLine("Fatal: " + ex.Message);
                 Console.ReadLine();
+                return -1;
             }
         }
-        public double[] learningFood(double[] brain )
+        public double[] learningFood(double[] brain, List<double[]> inputs, List<double[]> answers)
         {
             try
             {
+                String path3 = "C:\\inetpub\\wwwroot\\Foodie\\earlningegirdi.txt";
+                File.WriteAllText(path3, "learningegirdi");
                 Random rnd = new Random(1); // for random weights. not used.
-
-                List<double[]> inputs = new List<double[]>();         
-                inputs.Add(new double[3] { 0, 0, 0 });
-                inputs.Add(new double[3] { 1, 1, 1 });
-                inputs.Add(new double[3] { 0, 0, 1 });
-                inputs.Add(new double[3] { 1, 0, 1 });
-                inputs.Add(new double[3] { 0, 1, 0 });
-                inputs.Add(new double[3] { 0, 1, 1 });
-              
-
-                List<double[]> answers = new List<double[]>();
-                answers.Add(new double[2] { 0, 1 });
-                answers.Add(new double[2] { 1, 0 });
-                answers.Add(new double[2] { 0, 1 });
-                answers.Add(new double[2] { 0, 1 });
-                answers.Add(new double[2] { 0, 1 });
-                answers.Add(new double[2] { 0, 1 });
 
 
                 double[] xValues;
-                double[] yValues; // outputs
+                double[] yValues = new double[2]; // outputs
 
-                int numInput = 3;
+                int numInput = 814;
                 int numHidden = 4;
                 int numOutput = 2;
                 int numWeights = (numInput * numHidden) + (numHidden * numOutput) + (numHidden + numOutput);
@@ -91,29 +67,41 @@ namespace Foodie
 
                 double learnRate = 0.5;  // learning rate - controls the maginitude of the increase in the change in weights.
                 double momentum = 0.1; // momentum - to discourage oscillation.
-
+                String cevaplar = "";
                 for (int k = 0; k < 4000; k++)
                 {
                     for (int j = 0; j < inputs.Count; j++)
                     {
                         xValues = inputs[j];
                         yValues = bnn.ComputeOutputs(xValues);
+                        
                         bnn.UpdateWeights(answers[j], learnRate, momentum);
                     }
                 } // train loop
-                
+
+                for (int j = 0; j < inputs.Count; j++)
+                {
+                    xValues = inputs[j];
+                    yValues = bnn.ComputeOutputs(xValues);
+                    cevaplar += yValues[0] + " " + yValues[1];
+                }
 
                 double[] finalWeights = bnn.GetWeights();
 
-                string createText = "";
-                for (int j = 0; j < answers.Count; j++)
-                {
-                    yValues = bnn.ComputeOutputs(inputs[j]);
-                    createText += yValues[0].ToString() + " " + yValues[1] + Environment.NewLine;
-                    
-                }
-                String path = "C:\\Users\\AS-Bolshoi\\Desktop\\alp.txt";
-                File.WriteAllText(path, createText);
+                String path2 = "C:\\inetpub\\wwwroot\\Foodie\\cevaplar1.txt";
+                File.WriteAllText(path2, cevaplar);
+
+                String weights = "";
+                for (int i = 0; i < finalWeights.Length - 1; i++)
+                    weights += finalWeights[i] + "/";
+
+                for (int i = 0; i < 1; i++)
+                    weights += finalWeights[finalWeights.Length - 1];
+
+                String path4 = "C:\\inetpub\\wwwroot\\Foodie\\weights.txt";
+                File.WriteAllText(path4, weights);
+
+
                 return bnn.GetWeights();
 
             }
@@ -235,7 +223,8 @@ namespace Foodie
             Console.WriteLine("\nBegin Neural Network training using Back-Propagation demo\n");
             Random rnd = new Random(1); // for random weights. not used.
 
-            double[] xValues = new double[3] { 1.0, -2.0, 3.0 }; // inputs
+            double[] xValues = new double[814] { 0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,1.0
+ }; // inputs
             double[] tValues = new double[2] { 0.1234, 0.8766 }; // target values
 
             Console.WriteLine("The fixed input xValues are:");
@@ -244,7 +233,7 @@ namespace Foodie
             Console.WriteLine("The fixed target tValues are:");
             Helpers.ShowVector(tValues, 4, 8, true);
 
-            int numInput = 3;
+            int numInput = 814;
             int numHidden = 4;
             int numOutput = 2;
             int numWeights = (numInput * numHidden) + (numHidden * numOutput) + (numHidden + numOutput);
@@ -261,7 +250,30 @@ namespace Foodie
 
             Console.WriteLine("Loading neural network initial weights and biases into neural network");
             bnn.SetWeights(initWeights);
+
+            String weights = "";
+            for (int i = 0; i < initWeights.Length-1; i++)
+                weights += initWeights[i] + "/";
+
+            for (int i = 0; i < 1; i++)
+                weights += initWeights[initWeights.Length-1];
+
+            String path2 = "C:\\inetpub\\wwwroot\\Foodie\\weights.txt";
+            File.WriteAllText(path2, weights);
+
+
             return bnn.GetWeights();
+        }
+
+        public double[] getBrain()
+        {
+
+            double[] initWeights = new double[3270];
+            string text = System.IO.File.ReadAllText(@"C:\inetpub\wwwroot\Foodie\weights.txt");
+            string[] splittedText = text.Split('/');
+            for (int i = 0; i < splittedText.Length; i++)
+                initWeights[i] = Convert.ToDouble(splittedText[i]);
+            return initWeights;
         }
 
     } // Program

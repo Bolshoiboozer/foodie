@@ -10,16 +10,16 @@ bu işlemin davranışını düzenleyebilirsiniz. Bununla ilgili daha fazla bilg
   </PropertyGroup>
   <ItemGroup>
     <File Include="App_Data/Foodie.mdf">
-      <publishTime>12/13/2018 19:24:45</publishTime>
+      <publishTime>12/17/2018 01:34:52</publishTime>
     </File>
     <File Include="App_Data/Foodie_log.ldf">
-      <publishTime>12/13/2018 19:24:45</publishTime>
+      <publishTime>12/17/2018 01:34:52</publishTime>
     </File>
     <File Include="bin/Foodie.dll">
-      <publishTime>12/13/2018 19:37:25</publishTime>
+      <publishTime>12/19/2018 06:55:45</publishTime>
     </File>
     <File Include="bin/Foodie.pdb">
-      <publishTime>12/13/2018 19:37:25</publishTime>
+      <publishTime>12/19/2018 06:55:45</publishTime>
     </File>
     <File Include="bin/Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll">
       <publishTime>08/15/2017 13:12:32</publishTime>
