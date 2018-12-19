@@ -79,6 +79,12 @@ namespace Foodie
                routeTemplate: "api/{controller}/{action}/",
                defaults: new { id = RouteParameter.Optional }
            );
+
+            config.Routes.MapHttpRoute(
+               name: "setAlergens",
+               routeTemplate: "api/{controller}/{action}/",
+               defaults: new { id = RouteParameter.Optional }
+           );
         }
     }
 }

@@ -10,108 +10,102 @@ namespace Foodie
     class BackPropProgram
     {
         public static int myfile = 0;
+
+        //Testing food
         public double testFood(double[] brain, double[] inputs)
-        {
-            try
-            {
-                Random rnd = new Random(1); // for random weights. not used.
+{
+    try
+    {
+        //Initializing the neural network with trained brain
+        double[] yValues; // outputs
+        int numInput = 814;
+        int numHidden = 4;
+        int numOutput = 2;
+        int numWeights = (numInput * numHidden) + (numHidden * numOutput) + (numHidden + numOutput);
+        BackPropNeuralNet bnn = new BackPropNeuralNet(numInput, numHidden, numOutput);
+        bnn.SetWeights(brain);
 
-                double[] yValues; // outputs
+        //Computing the answer of the network
+        yValues = bnn.ComputeOutputs(inputs);
 
-                int numInput = 814;
-                int numHidden = 4;
-                int numOutput = 2;
-                int numWeights = (numInput * numHidden) + (numHidden * numOutput) + (numHidden + numOutput);
+        //Troubleshooting
+        string createText = "";
+        createText += yValues[0].ToString() + " " + yValues[1] + Environment.NewLine;
+        String path = "C:\\Users\\AS-Bolshoi\\Desktop\\"+myfile+".txt";
+        File.WriteAllText(path, createText);
+        myfile++;
 
-                BackPropNeuralNet bnn = new BackPropNeuralNet(numInput, numHidden, numOutput);
+        //Returning the answer for the food
+        return yValues[0];
+    }
 
-                bnn.SetWeights(brain);
+    //Exception handling.
+    catch (Exception ex)
+    {
+        Console.WriteLine("Fatal: " + ex.Message);
+        return -1;
+    }
+}
 
-                string createText = "";
-
-                yValues = bnn.ComputeOutputs(inputs);
-                createText += yValues[0].ToString() + " " + yValues[1] + Environment.NewLine;
-                
-                String path = "C:\\Users\\AS-Bolshoi\\Desktop\\"+myfile+".txt";
-                File.WriteAllText(path, createText);
-                myfile++;
-                return yValues[0];
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Fatal: " + ex.Message);
-                Console.ReadLine();
-                return -1;
-            }
-        }
+        //Start training
         public double[] learningFood(double[] brain, List<double[]> inputs, List<double[]> answers)
+{
+    try
+    {
+        //Declaring necessary arrays to store inputs and outputs
+        double[] xValues;
+        double[] yValues = new double[2]; // outputs
+
+        //Creating the necessary Neural Network object 
+        int numInput = 814;
+        int numHidden = 4;
+        int numOutput = 2;
+        int numWeights = (numInput * numHidden) + (numHidden * numOutput) + (numHidden + numOutput);
+        BackPropNeuralNet bnn = new BackPropNeuralNet(numInput, numHidden, numOutput);
+
+        //Setting the brain (weights) for the network.
+        bnn.SetWeights(brain);
+
+        //Declaring the learnRate and momentum for training
+
+        double learnRate = 0.5;  // learning rate - controls the maginitude of the increase in the change in weights.
+        double momentum = 0.1; // momentum - to discourage oscillation.
+
+        //Start training 
+        for (int k = 0; k < 4000; k++)
         {
-            try
+            for (int j = 0; j < inputs.Count; j++)
             {
-                String path3 = "C:\\inetpub\\wwwroot\\Foodie\\earlningegirdi.txt";
-                File.WriteAllText(path3, "learningegirdi");
-                Random rnd = new Random(1); // for random weights. not used.
-
-
-                double[] xValues;
-                double[] yValues = new double[2]; // outputs
-
-                int numInput = 814;
-                int numHidden = 4;
-                int numOutput = 2;
-                int numWeights = (numInput * numHidden) + (numHidden * numOutput) + (numHidden + numOutput);
-
-                BackPropNeuralNet bnn = new BackPropNeuralNet(numInput, numHidden, numOutput);
-
-                bnn.SetWeights(brain);
-
-                double learnRate = 0.5;  // learning rate - controls the maginitude of the increase in the change in weights.
-                double momentum = 0.1; // momentum - to discourage oscillation.
-                String cevaplar = "";
-                for (int k = 0; k < 4000; k++)
-                {
-                    for (int j = 0; j < inputs.Count; j++)
-                    {
-                        xValues = inputs[j];
-                        yValues = bnn.ComputeOutputs(xValues);
-                        
-                        bnn.UpdateWeights(answers[j], learnRate, momentum);
-                    }
-                } // train loop
-
-                for (int j = 0; j < inputs.Count; j++)
-                {
-                    xValues = inputs[j];
-                    yValues = bnn.ComputeOutputs(xValues);
-                    cevaplar += yValues[0] + " " + yValues[1];
-                }
-
-                double[] finalWeights = bnn.GetWeights();
-
-                String path2 = "C:\\inetpub\\wwwroot\\Foodie\\cevaplar1.txt";
-                File.WriteAllText(path2, cevaplar);
-
-                String weights = "";
-                for (int i = 0; i < finalWeights.Length - 1; i++)
-                    weights += finalWeights[i] + "/";
-
-                for (int i = 0; i < 1; i++)
-                    weights += finalWeights[finalWeights.Length - 1];
-
-                String path4 = "C:\\inetpub\\wwwroot\\Foodie\\weights.txt";
-                File.WriteAllText(path4, weights);
-
-
-                return bnn.GetWeights();
-
+                xValues = inputs[j];
+                yValues = bnn.ComputeOutputs(xValues);
+                bnn.UpdateWeights(answers[j], learnRate, momentum);
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Fatal: " + ex.Message);
-                Console.ReadLine();
-                return null;
-            }
-        }
+        } // train loop ends
+
+        //Get final changed weights
+        double[] finalWeights = bnn.GetWeights();
+
+        //Storing weights for troubleshooting
+        String weights = "";
+        for (int i = 0; i < finalWeights.Length - 1; i++)
+            weights += finalWeights[i] + "/";
+        for (int i = 0; i < 1; i++)
+            weights += finalWeights[finalWeights.Length - 1];
+        String path4 = "C:\\inetpub\\wwwroot\\Foodie\\weights.txt";
+        File.WriteAllText(path4, weights);
+
+        //Returning the weights
+        return bnn.GetWeights();
+
+    }
+
+    //Exception handling
+    catch (Exception ex)
+    {
+        Console.WriteLine("Fatal: " + ex.Message);
+        return null;
+    }
+}
 
         public void learnFood(double[] brain)
         {
@@ -218,50 +212,44 @@ namespace Foodie
 
         } // Main
 
+//Generating random weights(so called brain), ready for training.
         public double[] generateBrain()
         {
-            Console.WriteLine("\nBegin Neural Network training using Back-Propagation demo\n");
             Random rnd = new Random(1); // for random weights. not used.
 
             double[] xValues = new double[814] { 0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,1.0
- }; // inputs
-            double[] tValues = new double[2] { 0.1234, 0.8766 }; // target values
+        }; // inputs
+            double[] tValues = new double[2] { 0.5, 0.5 }; // target values
 
-            Console.WriteLine("The fixed input xValues are:");
-            Helpers.ShowVector(xValues, 1, 8, true);
-
-            Console.WriteLine("The fixed target tValues are:");
-            Helpers.ShowVector(tValues, 4, 8, true);
-
+            //declaring the sizes of each layer
             int numInput = 814;
             int numHidden = 4;
             int numOutput = 2;
+
+            //calculating the number of weights
             int numWeights = (numInput * numHidden) + (numHidden * numOutput) + (numHidden + numOutput);
 
+            //creating a Neural Network object with the specificied layer sizes. Back-propogation is allowed for the class object.
             BackPropNeuralNet bnn = new BackPropNeuralNet(numInput, numHidden, numOutput);
 
-            Console.WriteLine("\nGenerating random initial weights and bias values");
+            //Generating random initial weights.
             double[] initWeights = new double[numWeights];
             for (int i = 0; i < initWeights.Length; ++i)
                 initWeights[i] = (0.1 - 0.01) * rnd.NextDouble() + 0.01;
 
-            Console.WriteLine("\nInitial weights and biases are:");
-            Helpers.ShowVector(initWeights, 3, 8, true);
-
-            Console.WriteLine("Loading neural network initial weights and biases into neural network");
+            //Setting initialized weights for the neural network
             bnn.SetWeights(initWeights);
-
             String weights = "";
             for (int i = 0; i < initWeights.Length-1; i++)
                 weights += initWeights[i] + "/";
-
             for (int i = 0; i < 1; i++)
                 weights += initWeights[initWeights.Length-1];
-
+            
+            //Debugging purpose output
             String path2 = "C:\\inetpub\\wwwroot\\Foodie\\weights.txt";
             File.WriteAllText(path2, weights);
 
-
+            //Returning the weights of the generated neural network
             return bnn.GetWeights();
         }
 
@@ -278,229 +266,229 @@ namespace Foodie
 
     } // Program
     
-    public class BackPropNeuralNet
+public class BackPropNeuralNet
+{
+    private int numInput;
+    private int numHidden;
+    private int numOutput;
+
+    private double[] inputs;
+    private double[][] ihWeights; // input-to-hidden
+    private double[] hBiases;
+    private double[] hSums;
+    private double[] hOutputs;
+
+    private double[][] hoWeights;  // hidden-to-output
+    private double[] oBiases;
+    private double[] oSums;
+    private double[] outputs;
+
+    //private string hActivation; // "log-sigmoid" or "tanh"
+    //private string oActivation; // "log-sigmoid" or "tanh"
+
+    private double[] oGrads; // output gradients for back-propagation
+    private double[] hGrads; // hidden gradients for back-propagation
+
+    private double[][] ihPrevWeightsDelta;  // for momentum with back-propagation
+    private double[] hPrevBiasesDelta;
+    private double[][] hoPrevWeightsDelta;
+    private double[] oPrevBiasesDelta;
+
+    public BackPropNeuralNet(int numInput, int numHidden, int numOutput)
     {
-        private int numInput;
-        private int numHidden;
-        private int numOutput;
+        this.numInput = numInput;
+        this.numHidden = numHidden;
+        this.numOutput = numOutput;
 
-        private double[] inputs;
-        private double[][] ihWeights; // input-to-hidden
-        private double[] hBiases;
-        private double[] hSums;
-        private double[] hOutputs;
+        inputs = new double[numInput];
+        ihWeights = Helpers.MakeMatrix(numInput, numHidden);
+        hBiases = new double[numHidden];
+        hSums = new double[numHidden];
 
-        private double[][] hoWeights;  // hidden-to-output
-        private double[] oBiases;
-        private double[] oSums;
-        private double[] outputs;
+        hOutputs = new double[numHidden];
+        hoWeights = Helpers.MakeMatrix(numHidden, numOutput);
+        oBiases = new double[numOutput];
+        oSums = new double[numOutput];
+        outputs = new double[numOutput];
 
-        //private string hActivation; // "log-sigmoid" or "tanh"
-        //private string oActivation; // "log-sigmoid" or "tanh"
+        oGrads = new double[numOutput];
+        hGrads = new double[numHidden];
 
-        private double[] oGrads; // output gradients for back-propagation
-        private double[] hGrads; // hidden gradients for back-propagation
+        ihPrevWeightsDelta = Helpers.MakeMatrix(numInput, numHidden);
+        hPrevBiasesDelta = new double[numHidden];
+        hoPrevWeightsDelta = Helpers.MakeMatrix(numHidden, numOutput);
+        oPrevBiasesDelta = new double[numOutput];
+    }
 
-        private double[][] ihPrevWeightsDelta;  // for momentum with back-propagation
-        private double[] hPrevBiasesDelta;
-        private double[][] hoPrevWeightsDelta;
-        private double[] oPrevBiasesDelta;
+    public void SetWeights(double[] weights)
+    {
+        // assumes weights[] has order: input-to-hidden wts, hidden biases, hidden-to-output wts, output biases
+        int numWeights = (numInput * numHidden) + (numHidden * numOutput) + numHidden + numOutput;
+        if (weights.Length != numWeights)
+            throw new Exception("The weights array length: " + weights.Length +
+                " does not match the total number of weights and biases: " + numWeights);
 
-        public BackPropNeuralNet(int numInput, int numHidden, int numOutput)
-        {
-            this.numInput = numInput;
-            this.numHidden = numHidden;
-            this.numOutput = numOutput;
+        int k = 0; // points into weights param
 
-            inputs = new double[numInput];
-            ihWeights = Helpers.MakeMatrix(numInput, numHidden);
-            hBiases = new double[numHidden];
-            hSums = new double[numHidden];
+        for (int i = 0; i < numInput; ++i)
+            for (int j = 0; j < numHidden; ++j)
+                ihWeights[i][j] = weights[k++];
 
-            hOutputs = new double[numHidden];
-            hoWeights = Helpers.MakeMatrix(numHidden, numOutput);
-            oBiases = new double[numOutput];
-            oSums = new double[numOutput];
-            outputs = new double[numOutput];
+        for (int i = 0; i < numHidden; ++i)
+            hBiases[i] = weights[k++];
 
-            oGrads = new double[numOutput];
-            hGrads = new double[numHidden];
+        for (int i = 0; i < numHidden; ++i)
+            for (int j = 0; j < numOutput; ++j)
+                hoWeights[i][j] = weights[k++];
 
-            ihPrevWeightsDelta = Helpers.MakeMatrix(numInput, numHidden);
-            hPrevBiasesDelta = new double[numHidden];
-            hoPrevWeightsDelta = Helpers.MakeMatrix(numHidden, numOutput);
-            oPrevBiasesDelta = new double[numOutput];
-        }
+        for (int i = 0; i < numOutput; ++i)
+            oBiases[i] = weights[k++];
+    }
 
-        public void SetWeights(double[] weights)
-        {
-            // assumes weights[] has order: input-to-hidden wts, hidden biases, hidden-to-output wts, output biases
-            int numWeights = (numInput * numHidden) + (numHidden * numOutput) + numHidden + numOutput;
-            if (weights.Length != numWeights)
-                throw new Exception("The weights array length: " + weights.Length +
-                  " does not match the total number of weights and biases: " + numWeights);
+    public double[] GetWeights()
+    {
+        int numWeights = (numInput * numHidden) + (numHidden * numOutput) + numHidden + numOutput;
+        double[] result = new double[numWeights];
+        int k = 0;
+        for (int i = 0; i < ihWeights.Length; ++i)
+            for (int j = 0; j < ihWeights[0].Length; ++j)
+                result[k++] = ihWeights[i][j];
+        for (int i = 0; i < hBiases.Length; ++i)
+            result[k++] = hBiases[i];
+        for (int i = 0; i < hoWeights.Length; ++i)
+            for (int j = 0; j < hoWeights[0].Length; ++j)
+                result[k++] = hoWeights[i][j];
+        for (int i = 0; i < oBiases.Length; ++i)
+            result[k++] = oBiases[i];
+        return result;
+    }
 
-            int k = 0; // points into weights param
+    public double[] GetOutputs()
+    {
+        double[] result = new double[numOutput];
+        this.outputs.CopyTo(result, 0);
+        return result;
+    }
 
+    public double[] ComputeOutputs(double[] xValues)
+    {
+        if (xValues.Length != numInput)
+            throw new Exception("Inputs array length " + inputs.Length + " does not match NN numInput value " + numInput);
+
+        for (int i = 0; i < numHidden; ++i)
+            hSums[i] = 0.0;
+        for (int i = 0; i < numOutput; ++i)
+            oSums[i] = 0.0;
+
+        for (int i = 0; i < xValues.Length; ++i) // copy x-values to inputs
+            this.inputs[i] = xValues[i];
+
+        for (int j = 0; j < numHidden; ++j)  // compute hidden layer weighted sums
             for (int i = 0; i < numInput; ++i)
-                for (int j = 0; j < numHidden; ++j)
-                    ihWeights[i][j] = weights[k++];
+                hSums[j] += this.inputs[i] * ihWeights[i][j];
 
+        for (int i = 0; i < numHidden; ++i)  // add biases to hidden sums
+            hSums[i] += hBiases[i];
+
+        for (int i = 0; i < numHidden; ++i)   // apply tanh activation
+            hOutputs[i] = HyperTanFunction(hSums[i]);
+
+        for (int j = 0; j < numOutput; ++j)   // compute output layer weighted sums
             for (int i = 0; i < numHidden; ++i)
-                hBiases[i] = weights[k++];
+                oSums[j] += hOutputs[i] * hoWeights[i][j];
 
-            for (int i = 0; i < numHidden; ++i)
-                for (int j = 0; j < numOutput; ++j)
-                    hoWeights[i][j] = weights[k++];
+        for (int i = 0; i < numOutput; ++i)  // add biases to output sums
+            oSums[i] += oBiases[i];
 
-            for (int i = 0; i < numOutput; ++i)
-                oBiases[i] = weights[k++];
+        for (int i = 0; i < numOutput; ++i)   // apply log-sigmoid activation
+            this.outputs[i] = SigmoidFunction(oSums[i]);
+
+        double[] result = new double[numOutput]; // for convenience when calling method
+        this.outputs.CopyTo(result, 0);
+        return result;
+    } // ComputeOutputs
+
+    private static double SigmoidFunction(double x)
+    {
+        if (x < -45.0) return 0.0;
+        else if (x > 45.0) return 1.0;
+        else return 1.0 / (1.0 + Math.Exp(-x));
+    }
+
+    private static double HyperTanFunction(double x)
+    {
+        if (x < -45.0) return -1.0;
+        else if (x > 45.0) return 1.0;
+        else return Math.Tanh(x);
+    }
+
+    public void UpdateWeights(double[] tValues, double learn, double mom) // back-propagation
+    {
+        // assumes that SetWeights and ComputeOutputs have been called and so inputs and outputs have values
+        if (tValues.Length != numOutput)
+            throw new Exception("target values not same Length as output in UpdateWeights");
+
+        // 1. compute output gradients. assumes log-sigmoid!
+        for (int i = 0; i < oGrads.Length; ++i)
+        {
+            double derivative = (1 - outputs[i]) * outputs[i]; // derivative of log-sigmoid is y(1-y)
+            oGrads[i] = derivative * (tValues[i] - outputs[i]); // oGrad = (1 - O)(O) * (T-O)
         }
 
-        public double[] GetWeights()
+        // 2. compute hidden gradients. assumes tanh!
+        for (int i = 0; i < hGrads.Length; ++i)
         {
-            int numWeights = (numInput * numHidden) + (numHidden * numOutput) + numHidden + numOutput;
-            double[] result = new double[numWeights];
-            int k = 0;
-            for (int i = 0; i < ihWeights.Length; ++i)
-                for (int j = 0; j < ihWeights[0].Length; ++j)
-                    result[k++] = ihWeights[i][j];
-            for (int i = 0; i < hBiases.Length; ++i)
-                result[k++] = hBiases[i];
-            for (int i = 0; i < hoWeights.Length; ++i)
-                for (int j = 0; j < hoWeights[0].Length; ++j)
-                    result[k++] = hoWeights[i][j];
-            for (int i = 0; i < oBiases.Length; ++i)
-                result[k++] = oBiases[i];
-            return result;
+            double derivative = (1 - hOutputs[i]) * (1 + hOutputs[i]); // derivative of tanh is (1-y)(1+y)
+            double sum = 0.0;
+            for (int j = 0; j < numOutput; ++j) // each hidden delta is the sum of numOutput terms
+                sum += oGrads[j] * hoWeights[i][j]; // each downstream gradient * outgoing weight
+            hGrads[i] = derivative * sum; // hGrad = (1-O)(1+O) * E(oGrads*oWts)
         }
 
-        public double[] GetOutputs()
+        // 3. update input to hidden weights (gradients must be computed right-to-left but weights can be updated in any order)
+        for (int i = 0; i < ihWeights.Length; ++i) // 0..2 (3)
         {
-            double[] result = new double[numOutput];
-            this.outputs.CopyTo(result, 0);
-            return result;
+            for (int j = 0; j < ihWeights[0].Length; ++j) // 0..3 (4)
+            {
+                double delta = learn * hGrads[j] * inputs[i]; // compute the new delta = "eta * hGrad * input"
+                ihWeights[i][j] += delta; // update
+                ihWeights[i][j] += mom * ihPrevWeightsDelta[i][j]; // add momentum using previous delta. on first pass old value will be 0.0 but that's OK.
+                ihPrevWeightsDelta[i][j] = delta; // save the delta for next time
+            }
         }
 
-        public double[] ComputeOutputs(double[] xValues)
+        // 4. update hidden biases
+        for (int i = 0; i < hBiases.Length; ++i)
         {
-            if (xValues.Length != numInput)
-                throw new Exception("Inputs array length " + inputs.Length + " does not match NN numInput value " + numInput);
-
-            for (int i = 0; i < numHidden; ++i)
-                hSums[i] = 0.0;
-            for (int i = 0; i < numOutput; ++i)
-                oSums[i] = 0.0;
-
-            for (int i = 0; i < xValues.Length; ++i) // copy x-values to inputs
-                this.inputs[i] = xValues[i];
-
-            for (int j = 0; j < numHidden; ++j)  // compute hidden layer weighted sums
-                for (int i = 0; i < numInput; ++i)
-                    hSums[j] += this.inputs[i] * ihWeights[i][j];
-
-            for (int i = 0; i < numHidden; ++i)  // add biases to hidden sums
-                hSums[i] += hBiases[i];
-
-            for (int i = 0; i < numHidden; ++i)   // apply tanh activation
-                hOutputs[i] = HyperTanFunction(hSums[i]);
-
-            for (int j = 0; j < numOutput; ++j)   // compute output layer weighted sums
-                for (int i = 0; i < numHidden; ++i)
-                    oSums[j] += hOutputs[i] * hoWeights[i][j];
-
-            for (int i = 0; i < numOutput; ++i)  // add biases to output sums
-                oSums[i] += oBiases[i];
-
-            for (int i = 0; i < numOutput; ++i)   // apply log-sigmoid activation
-                this.outputs[i] = SigmoidFunction(oSums[i]);
-
-            double[] result = new double[numOutput]; // for convenience when calling method
-            this.outputs.CopyTo(result, 0);
-            return result;
-        } // ComputeOutputs
-
-        private static double SigmoidFunction(double x)
-        {
-            if (x < -45.0) return 0.0;
-            else if (x > 45.0) return 1.0;
-            else return 1.0 / (1.0 + Math.Exp(-x));
+            double delta = learn * hGrads[i] * 1.0; // the 1.0 is the constant input for any bias; could leave out
+            hBiases[i] += delta;
+            hBiases[i] += mom * hPrevBiasesDelta[i];
+            hPrevBiasesDelta[i] = delta; // save delta
         }
 
-        private static double HyperTanFunction(double x)
+        // 5. update hidden to output weights
+        for (int i = 0; i < hoWeights.Length; ++i)  // 0..3 (4)
         {
-            if (x < -45.0) return -1.0;
-            else if (x > 45.0) return 1.0;
-            else return Math.Tanh(x);
+            for (int j = 0; j < hoWeights[0].Length; ++j) // 0..1 (2)
+            {
+                double delta = learn * oGrads[j] * hOutputs[i];  // hOutputs are inputs to next layer
+                hoWeights[i][j] += delta;
+                hoWeights[i][j] += mom * hoPrevWeightsDelta[i][j];
+                hoPrevWeightsDelta[i][j] = delta;
+            }
         }
 
-        public void UpdateWeights(double[] tValues, double learn, double mom) // back-propagation
+        // 6. update hidden to output biases
+        for (int i = 0; i < oBiases.Length; ++i)
         {
-            // assumes that SetWeights and ComputeOutputs have been called and so inputs and outputs have values
-            if (tValues.Length != numOutput)
-                throw new Exception("target values not same Length as output in UpdateWeights");
+            double delta = learn * oGrads[i] * 1.0;
+            oBiases[i] += delta;
+            oBiases[i] += mom * oPrevBiasesDelta[i];
+            oPrevBiasesDelta[i] = delta;
+        }
+    } // UpdateWeights
 
-            // 1. compute output gradients. assumes log-sigmoid!
-            for (int i = 0; i < oGrads.Length; ++i)
-            {
-                double derivative = (1 - outputs[i]) * outputs[i]; // derivative of log-sigmoid is y(1-y)
-                oGrads[i] = derivative * (tValues[i] - outputs[i]); // oGrad = (1 - O)(O) * (T-O)
-            }
-
-            // 2. compute hidden gradients. assumes tanh!
-            for (int i = 0; i < hGrads.Length; ++i)
-            {
-                double derivative = (1 - hOutputs[i]) * (1 + hOutputs[i]); // derivative of tanh is (1-y)(1+y)
-                double sum = 0.0;
-                for (int j = 0; j < numOutput; ++j) // each hidden delta is the sum of numOutput terms
-                    sum += oGrads[j] * hoWeights[i][j]; // each downstream gradient * outgoing weight
-                hGrads[i] = derivative * sum; // hGrad = (1-O)(1+O) * E(oGrads*oWts)
-            }
-
-            // 3. update input to hidden weights (gradients must be computed right-to-left but weights can be updated in any order)
-            for (int i = 0; i < ihWeights.Length; ++i) // 0..2 (3)
-            {
-                for (int j = 0; j < ihWeights[0].Length; ++j) // 0..3 (4)
-                {
-                    double delta = learn * hGrads[j] * inputs[i]; // compute the new delta = "eta * hGrad * input"
-                    ihWeights[i][j] += delta; // update
-                    ihWeights[i][j] += mom * ihPrevWeightsDelta[i][j]; // add momentum using previous delta. on first pass old value will be 0.0 but that's OK.
-                    ihPrevWeightsDelta[i][j] = delta; // save the delta for next time
-                }
-            }
-
-            // 4. update hidden biases
-            for (int i = 0; i < hBiases.Length; ++i)
-            {
-                double delta = learn * hGrads[i] * 1.0; // the 1.0 is the constant input for any bias; could leave out
-                hBiases[i] += delta;
-                hBiases[i] += mom * hPrevBiasesDelta[i];
-                hPrevBiasesDelta[i] = delta; // save delta
-            }
-
-            // 5. update hidden to output weights
-            for (int i = 0; i < hoWeights.Length; ++i)  // 0..3 (4)
-            {
-                for (int j = 0; j < hoWeights[0].Length; ++j) // 0..1 (2)
-                {
-                    double delta = learn * oGrads[j] * hOutputs[i];  // hOutputs are inputs to next layer
-                    hoWeights[i][j] += delta;
-                    hoWeights[i][j] += mom * hoPrevWeightsDelta[i][j];
-                    hoPrevWeightsDelta[i][j] = delta;
-                }
-            }
-
-            // 6. update hidden to output biases
-            for (int i = 0; i < oBiases.Length; ++i)
-            {
-                double delta = learn * oGrads[i] * 1.0;
-                oBiases[i] += delta;
-                oBiases[i] += mom * oPrevBiasesDelta[i];
-                oPrevBiasesDelta[i] = delta;
-            }
-        } // UpdateWeights
-
-    } // BackPropNeuralNet
+} // BackPropNeuralNet
 
 
     // ===========================================================================

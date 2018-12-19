@@ -13,11 +13,7 @@ namespace Foodie.Controllers
 {
     public class FoodController : ApiController
     {
-        // GET: api/Foods
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
+        //GET-and POST Request Actions for the Swift front-end to fetch and send data from&to back-end.
 
         [HttpGet]
         [ActionName("getRandomFood")]
@@ -93,24 +89,10 @@ namespace Foodie.Controllers
         [ActionName("setAllergens")]
         public HttpWebResponse setAllergens([FromBody]String[] allergen)
         {
-            /*
-            SqlConnection connection = new SqlConnection("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\AS-Bolshoi\\source\\repos\\Foodie\\Foodie\\App_Data\\Foodie.mdf;Integrated Security=True");
-
-            connection.Open();
-
-            string sql = "INSERT INTO Users(UserID) VALUES(@param1)";
-            SqlCommand cmd = new SqlCommand(sql, connection);
-            cmd.Parameters.AddWithValue("@param1", userId);
-            cmd.CommandType = CommandType.Text;
-            cmd.ExecuteNonQuery();
-
-
-            connection.Close();
-            String path = "C:\\inetpub\\wwwroot\\Foodie\\userRegisters.txt";
-            File.WriteAllText(path, userId);*/
-
-            String path = "C:\\inetpub\\wwwroot\\Foodie\\setAllergens.txt";
+            String path = "C:\\inetpub\\wwwroot\\Foodie\\alergen.txt";
+            Food.setAlergens(allergen);
             File.WriteAllText(path, allergen[0]);
+           
             return null;
         }
 
@@ -185,27 +167,8 @@ namespace Foodie.Controllers
                 a += answers[i] + " ";
             String path2 = "C:\\inetpub\\wwwroot\\Foodie\\answers.txt";
             File.WriteAllText(path2, a);
-
             Food.getAnswers(Food.FoodList, sendAnswers);
             return null;
-        }
-
-
-
-        // POST: api/Foods
-        public void Post([FromBody]string value)
-        {
-            
-        }
-
-        // PUT: api/Foods/5
-        public void Put(int id, [FromBody]string value)
-        {
-        }
-
-        // DELETE: api/Foods/5
-        public void Delete(int id)
-        {
         }
     }
 }

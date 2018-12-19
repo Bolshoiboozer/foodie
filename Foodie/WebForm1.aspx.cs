@@ -121,6 +121,8 @@ namespace Foodie
               {
                   yazi += myFood[i].displayFood(myFood[i]);
               }*/
+
+            /*
             List<Food> alp = new List<Food>();
             String[] alper = new String[1];
             alper[0] = "http://www.edamam.com/ontologies/edamam.owl#recipe_9b5945e03f05acbf9d69625138385408";
@@ -128,7 +130,13 @@ namespace Foodie
             String yazi = alp[0].displayFood(alp[0]);
             String path3 = "C:\\inetpub\\wwwroot\\Foodie\\deneme2.txt";
             File.WriteAllText(path3, yazi);
-            Food.setMostLoved(alper);
+            Food.setMostLoved(alper);*/
+
+            
+            String[] deneme = new String[2];
+            deneme[0] = "apple";
+            deneme[1] = "lemon";
+            Food.setAlergens(deneme);
         }
     }
 }
